@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quote Filter</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    input {
+      padding: 6px;
+      width: 250px;
+    }
+    ul {
+      margin-top: 20px;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    #error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Quotes</h2>
+  <input type="text" id="search" placeholder="Search quotes..." />
+  <p id="error"></p>
+  <ul id="list"></ul>
+
+  <script>
+    let allQuotes = [];
+
+    fetch("https://dummyjson.com/quotes")
+      .then(res => res.json())
+      .then(data => {
+        allQuotes = data.quotes;
+        showQuotes(allQuotes);
+      })
+      .catch(err => {
+        document.getElementById('error').textContent = "Could not load quotes.";
+      });
+
+    function showQuotes(quotes) {
+      const list = document.getElementById('list');
+      list.innerHTML = '';
+      quotes.forEach(q => {
+        const li = document.createElement('li');
+        li.textContent = q.quote;
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById('search').addEventListener('input', function() {
+      const text = this.value.toLowerCase();
+      const filtered = allQuotes.filter(q => q.quote.toLowerCase().includes(text));
+      showQuotes(filtered);
+    });
+  </script>
+
+</body>
+</html>
